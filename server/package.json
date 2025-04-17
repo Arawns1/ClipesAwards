@@ -10,7 +10,10 @@
     "test:watch": "jest --watchAll --runInBand",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
-    "services:down": "docker compose -f infra/compose.yaml down"
+    "services:down": "docker compose -f infra/compose.yaml down",
+    "migration:create": "node-pg-migrate -m infra/migrations -j ts create",
+    "migration:up": "node-pg-migrate -m infra/migrations --tsconfig tsconfig.json --envPath .env up",
+    "migration:down": "node-pg-migrate -m infra/migrations --tsconfig tsconfig.json --envPath .env down"
   },
   "keywords": [],
   "author": "",
@@ -21,8 +24,10 @@
     "@types/node": "^22.10.7",
     "@types/pg": "^8.11.13",
     "jest": "^29.7.0",
+    "node-pg-migrate": "^7.9.1",
     "prettier": "^3.4.2",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   },
