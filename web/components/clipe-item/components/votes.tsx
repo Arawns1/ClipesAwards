@@ -2,27 +2,47 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
 import { useState } from "react";
+import { voteOnClip } from "@/lib/api/clips";
+import { VoteType } from "@/@types/Clipe";
 
-type VoteType = "upvote" | "downvote";
+type VotesComponentProps = {
+  clipId: string;
+  initialVotes?: number;
+  previousVoteValue?: VoteType;
+};
 
-function VotesComponent() {
-  const [votes, setVotes] = useState(0);
-  const [value, setValue] = useState("");
+function VotesComponent({
+  initialVotes,
+  previousVoteValue,
+  clipId,
+}: VotesComponentProps) {
+  const [votes, setVotes] = useState(initialVotes || 0);
+  const [value, setValue] = useState(previousVoteValue || "");
 
-  const increment = () => setVotes((prevCount) => prevCount + 1);
-  const decrement = () => setVotes((prevCount) => prevCount - 1);
+  const increment = () =>
+    setVotes((prevCount) => (prevCount === -1 ? 1 : prevCount + 1));
 
-  const handleVote = (value: VoteType) => {
+  const decrement = () =>
+    setVotes((prevCount) => (prevCount === 1 ? -1 : prevCount - 1));
+
+  const handleVote = async (value: VoteType) => {
+    if (!value) return;
     if (value) setValue(value);
-    if (value === "upvote") {
-      increment();
-    } else if (value === "downvote") {
-      decrement();
+
+    try {
+      await voteOnClip(clipId, "198930202967932928", value);
+      if (value === "UP") {
+        increment();
+      } else if (value === "DOWN") {
+        decrement();
+      }
+    } catch (error) {
+      console.error("Error submitting vote:", error);
     }
   };
 
   return (
-    <div className="flex items-center  mt-2">
+    <div className="flex items-center mt-2">
       <ToggleGroup
         size={"sm"}
         type="single"
@@ -30,7 +50,7 @@ function VotesComponent() {
         onValueChange={handleVote}
       >
         <ToggleGroupItem
-          value="upvote"
+          value="UP"
           aria-label="Toggle upvote"
           className="data-[state=on]:bg-blue-500 data-[state=on]:text-white"
         >
@@ -38,7 +58,7 @@ function VotesComponent() {
         </ToggleGroupItem>
         <span className="mx-2 text font-bold">{votes}</span>
         <ToggleGroupItem
-          value="downvote"
+          value="DOWN"
           aria-label="Toggle downvote"
           className="data-[state=on]:bg-red-500 data-[state=on]:text-white"
         >

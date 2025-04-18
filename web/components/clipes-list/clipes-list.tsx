@@ -19,7 +19,11 @@ export function ClipesList() {
           <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
           <ClipeItem.Video src={clipe.video_src} />
           <ClipeItem.Actions>
-            <VotesComponent />
+            <VotesComponent
+              clipId={clipe.clip_id}
+              initialVotes={clipe.total_votes}
+              previousVoteValue={clipe.previous_user_vote}
+            />
             <CommentsComponent />
           </ClipeItem.Actions>
         </ClipeItem>

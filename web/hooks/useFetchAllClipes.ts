@@ -1,5 +1,5 @@
 import { ClipeDTO } from "@/@types/Clipe";
-import getAllClips from "@/components/clipes-list/getAllClips";
+import { getAllClips } from "@/lib/api/clips";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 export default function useGetAllClipes() {

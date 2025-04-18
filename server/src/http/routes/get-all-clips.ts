@@ -59,9 +59,17 @@ async function mapMessageToClips({
   attachment,
 }: MessageWithAttachment) {
   const { createdTimestamp, author, id } = message;
+  const clipId = attachment.id;
+
+  const previousVote = await vote.findOneById(
+    { userId: "198930202967932928", clipId },
+    { throwable: false },
+  );
+
+  const totalVotes = await vote.getTotalVotes(clipId);
 
   return {
-    clip_id: attachment.id,
+    clip_id: clipId,
     posted_at: new Date(createdTimestamp).toISOString(),
     video_src: attachment.url,
     user: {
@@ -70,6 +78,7 @@ async function mapMessageToClips({
       avatar_url: author.avatarURL(),
     },
     message_id: id,
-    total_votes: await vote.getTotalVotes(attachment.id),
+    previous_user_vote: previousVote?.vote_type || null,
+    total_votes: totalVotes || 0,
   };
 }
