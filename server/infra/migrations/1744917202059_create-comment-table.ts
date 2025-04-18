@@ -18,11 +18,11 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true,
       default: pgm.func("(now() at time zone 'utc')"),
     },
-    id_clip: {
+    clip_id: {
       type: "BIGINT",
       notNull: true,
     },
-    id_user: {
+    user_id: {
       type: "BIGINT",
       notNull: true,
     },
@@ -31,7 +31,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.addConstraint("comment", "comment_id_clip_fkey", {
     foreignKeys: [
       {
-        columns: "id_clip",
+        columns: "clip_id",
         references: "Clip(id)",
         onDelete: "CASCADE",
       },
@@ -39,7 +39,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   });
   pgm.addConstraint("comment", "comment_id_user_fkey", {
     foreignKeys: {
-      columns: "id_user",
+      columns: "user_id",
       references: "Users(id)",
       onDelete: "CASCADE",
     },

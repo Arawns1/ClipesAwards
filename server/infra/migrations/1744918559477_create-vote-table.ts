@@ -4,11 +4,6 @@ export const shorthands: ColumnDefinitions | undefined = undefined;
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable("vote", {
-    id: {
-      type: "SERIAL",
-      notNull: true,
-      primaryKey: true,
-    },
     vote_type: {
       type: "VARCHAR(4)",
       notNull: true,
@@ -19,20 +14,25 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       notNull: true,
       default: pgm.func("(now() at time zone 'utc')"),
     },
-    id_clip: {
+    clip_id: {
       type: "BIGINT",
       notNull: true,
     },
-    id_user: {
+    user_id: {
       type: "BIGINT",
       notNull: true,
     },
   });
 
+  // Define a chave primária composta
+  pgm.addConstraint("vote", "vote_pkey", {
+    primaryKey: ["clip_id", "user_id"],
+  });
+
   pgm.addConstraint("vote", "vote_id_clip_fkey", {
     foreignKeys: [
       {
-        columns: "id_clip",
+        columns: "clip_id",
         references: "Clip(id)",
         onDelete: "CASCADE",
       },
@@ -40,14 +40,10 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
   });
   pgm.addConstraint("vote", "vote_id_user_fkey", {
     foreignKeys: {
-      columns: "id_user",
+      columns: "user_id",
       references: "Users(id)",
       onDelete: "CASCADE",
     },
-  });
-
-  pgm.addConstraint("vote", "unique_id_user_id_clip", {
-    unique: ["id_user", "id_clip"],
   });
 }
 

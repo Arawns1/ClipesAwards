@@ -13,7 +13,8 @@
     "services:down": "docker compose -f infra/compose.yaml down",
     "migration:create": "node-pg-migrate -m infra/migrations -j ts create",
     "migration:up": "node-pg-migrate -m infra/migrations --tsconfig tsconfig.json --envPath .env up",
-    "migration:down": "node-pg-migrate -m infra/migrations --tsconfig tsconfig.json --envPath .env down"
+    "migration:down": "node-pg-migrate -m infra/migrations --tsconfig tsconfig.json --envPath .env down",
+    "migration:seed": "tsx --no-watch -r dotenv-expand/config infra/scripts/seed-database.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,7 @@
 import { Attachment, Message } from "discord.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getCursors, getMessagesFromClipsChannel } from "src/ws/get-all-clips";
+import vote from "models/Vote";
 
 type GetAllClipsRequest = FastifyRequest<{
   Querystring: { cursor: string | null; direction: DirectionCursor };
@@ -29,15 +30,13 @@ export async function getAllClips(app: FastifyInstance) {
         direction,
       );
 
-      const [clips, cursors] = await Promise.all([
-        messages.map(mapMessageToClips),
-        getCursors(messages, FETCH_SIZE, direction),
-      ]);
+      const clips = await Promise.all(
+        messages.map(async (mes) => await mapMessageToClips(mes)),
+      );
 
-      // const { prevCursor, nextCursor } = cursors;
+      const cursors = await getCursors(messages, FETCH_SIZE, direction);
 
       const responseBody = {
-        // prevCursor,
         nextCursor: cursors.nextCursor,
         data: clips,
       };
@@ -55,7 +54,10 @@ export async function getAllClips(app: FastifyInstance) {
   });
 }
 
-function mapMessageToClips({ message, attachment }: MessageWithAttachment) {
+async function mapMessageToClips({
+  message,
+  attachment,
+}: MessageWithAttachment) {
   const { createdTimestamp, author, id } = message;
 
   return {
@@ -63,9 +65,11 @@ function mapMessageToClips({ message, attachment }: MessageWithAttachment) {
     posted_at: new Date(createdTimestamp).toISOString(),
     video_src: attachment.url,
     user: {
+      id: author.id,
       name: author.globalName,
       avatar_url: author.avatarURL(),
     },
     message_id: id,
+    total_votes: await vote.getTotalVotes(attachment.id),
   };
 }
