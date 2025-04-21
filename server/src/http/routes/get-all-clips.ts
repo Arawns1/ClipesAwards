@@ -5,7 +5,7 @@ import vote from "models/Vote";
 
 type GetAllClipsRequest = FastifyRequest<{
   Querystring: { cursor: string | null; direction: DirectionCursor };
-}>;
+}> & { user?: { id: string } };
 export type MessageWithAttachment = {
   message: Message;
   attachment: Attachment;
@@ -31,7 +31,7 @@ export async function getAllClips(app: FastifyInstance) {
       );
 
       const clips = await Promise.all(
-        messages.map(async (mes) => await mapMessageToClips(mes)),
+        messages.map(async (mes) => await mapMessageToClips(mes, req.user)),
       );
 
       const cursors = await getCursors(messages, FETCH_SIZE, direction);
@@ -54,17 +54,22 @@ export async function getAllClips(app: FastifyInstance) {
   });
 }
 
-async function mapMessageToClips({
-  message,
-  attachment,
-}: MessageWithAttachment) {
+async function mapMessageToClips(
+  messageProps: MessageWithAttachment,
+  user?: { id: string },
+) {
+  const { message, attachment } = messageProps;
+
   const { createdTimestamp, author, id } = message;
   const clipId = attachment.id;
+  let previousVote;
 
-  const previousVote = await vote.findOneById(
-    { userId: "198930202967932928", clipId },
-    { throwable: false },
-  );
+  if (user) {
+    previousVote = await vote.findOneById(
+      { userId: user.id, clipId },
+      { throwable: false },
+    );
+  }
 
   const totalVotes = await vote.getTotalVotes(clipId);
 
@@ -74,7 +79,7 @@ async function mapMessageToClips({
     video_src: attachment.url,
     user: {
       id: author.id,
-      name: author.globalName,
+      username: author.globalName,
       avatar_url: author.avatarURL(),
     },
     message_id: id,

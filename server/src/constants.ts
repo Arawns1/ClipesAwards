@@ -37,3 +37,12 @@ export const BASE_URL =
   "RENDER_EXTERNAL_URL" in process.env
     ? process.env.RENDER_EXTERNAL_URL
     : `http://${HOST}:${PORT}`;
+
+export const COOKIE_TOKEN_NAME = process.env.COOKIE_TOKEN_NAME!;
+export const COOKIE_IS_LOGGED_NAME = process.env.COOKIE_IS_LOGGED_NAME!;
+export const TOKEN_DAYS_EXPIRATION = 7;
+export const DISCORD_GET_ACCESS_TOKEN_URL =
+  "https://discord.com/api/v10/oauth2/token";
+export const DISCORD_GET_USER_PROFILE_URL =
+  "https://discord.com/api/v10/users/@me";
+export const DISCORD_OAUTH_LOGIN_URL = process.env.DISCORD_OAUTH_LOGIN_URL;

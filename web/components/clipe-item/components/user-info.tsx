@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { User } from "@/@types/Clipe";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import dateFormatter from "@/lib/date";
+import { User } from "@/@types/User";
 
 export type UserInfoProps = {
   user: User;
@@ -38,7 +38,9 @@ function UserInfo({ user, posted_at }: UserInfoProps) {
       </Avatar>
 
       <div className="text-sm flex flex-col items-start flex-nowrap">
-        <span className="font-semibold leading-5 capitalize">{user.name}</span>
+        <span className="font-semibold leading-5 capitalize">
+          {user.username}
+        </span>
         <span className="text-gray-500">{formattedDate}</span>
       </div>
     </div>

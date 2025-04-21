@@ -110,3 +110,26 @@ export class ValidationError extends BaseError {
     });
   }
 }
+
+interface UnauthorizedErrorParams extends Partial<BaseErrorParams> {}
+export class UnauthorizedError extends BaseError {
+  constructor({
+    message,
+    action,
+    requestId,
+    stack,
+    errorLocationCode,
+  }: UnauthorizedErrorParams) {
+    super({
+      name: "UnauthorizedError",
+      message: message || "Usuário não autenticado.",
+      action:
+        action ||
+        "Verifique se você está autenticado com uma sessão ativa e tente novamente.",
+      requestId: requestId,
+      statusCode: 401,
+      stack: stack,
+      errorLocationCode: errorLocationCode,
+    });
+  }
+}

@@ -1,8 +1,9 @@
+import { AuthProvider } from "@/providers/auth-provider";
+import { QueryProvider } from "@/providers/query-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { QueryProvider } from "@/components/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
   description: "Melhores clipes do servidor Kaique's House",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+type LayoutProps = {
   children: React.ReactNode;
-}>) {
+};
+
+export default function RootLayout({ children }: LayoutProps) {
   const defaultTheme = "dark";
 
   return (
@@ -35,7 +36,7 @@ export default function RootLayout({
             defaultTheme={defaultTheme}
             disableTransitionOnChange
           >
-            {children}
+            <AuthProvider>{children}</AuthProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>

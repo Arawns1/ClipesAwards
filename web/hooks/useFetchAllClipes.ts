@@ -10,6 +10,6 @@ export default function useGetAllClipes() {
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? null,
     // getPreviousPageParam: (firstPage) => firstPage.prevCursor ?? null,
     refetchOnWindowFocus: false,
-    staleTime: Infinity,
+    // staleTime: Infinity,
   });
 }

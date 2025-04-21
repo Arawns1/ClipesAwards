@@ -36,6 +36,8 @@ async function save(user: SaveUserParams) {
   const queryText = `
         INSERT INTO users (id, avatar_url, username)
         VALUES ($1, $2, $3)
+        ON CONFLICT (id)
+        DO UPDATE SET avatar_url = $2, username = $3
         RETURNING *;
       `;
   const query = {

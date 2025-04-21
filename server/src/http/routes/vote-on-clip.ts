@@ -1,16 +1,16 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import vote, { VoteType } from "models/Vote";
-import { NotFoundError, ValidationError } from "src/errors";
+
+import { VoteType } from "models/Vote";
+import { NotFoundError, UnauthorizedError, ValidationError } from "src/errors";
 
 type voteOnClipBody = {
-  user_id: string;
   vote_type: VoteType;
 };
 
 type voteOnClipRequest = FastifyRequest<{
   Params: { clip_id?: string | null };
   Body: voteOnClipBody;
-}>;
+}> & { user?: { id: string } };
 
 export async function voteOnClip(app: FastifyInstance) {
   app.post(
@@ -33,16 +33,30 @@ export async function voteOnClip(app: FastifyInstance) {
             key: "body",
           });
         }
+        if (!req.user) {
+          throw new UnauthorizedError({
+            message: `Usuário não autorizado. Faça login e tente novamente.`,
+            stack: new Error().stack,
+            errorLocationCode: `RESOURCE:VOTE_ON_CLIP:VOTE_ON_CLIP:UNAUTHORIZED_USER`,
+            key: "user",
+          });
+        }
 
         const { clip_id: clipId } = req.params;
-        const { user_id: userId, vote_type: voteType } = req.body;
+        const { vote_type: voteType } = req.body;
+        const userId = req.user.id;
 
-        const voteSaved = await vote.save({ clipId, userId, voteType });
-        const totalVotes = await vote.getTotalVotes(clipId);
+        // const voteSaved = await vote.save({ clipId, userId, voteType });
+        // const totalVotes = await vote.getTotalVotes(clipId);
 
-        res.status(200).send({ ...voteSaved, totalVotes });
+        // res.status(200).send({ ...voteSaved, totalVotes });
+        res.status(200);
       } catch (err) {
-        if (err instanceof NotFoundError || err instanceof ValidationError) {
+        if (
+          err instanceof NotFoundError ||
+          err instanceof ValidationError ||
+          err instanceof UnauthorizedError
+        ) {
           return res.code(err.statusCode).send(err);
         }
 

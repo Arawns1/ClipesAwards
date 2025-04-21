@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import database from "infra/database";
-import pool from "infra/database";
 
 export async function status(app: FastifyInstance) {
   app.get("/status", async (request, response) => {

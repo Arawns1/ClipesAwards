@@ -8,7 +8,7 @@ const pool = new Pool({
   ssl: getSSLValues(),
   max: 5, // número máximo de conexões simultâneas
   idleTimeoutMillis: 30000, // desconecta conexões ociosas após 30 segundos
-  connectionTimeoutMillis: 2000, // erro se não conseguir conectar em 2 segundos
+  connectionTimeoutMillis: 10000, // erro se não conseguir conectar em 10 segundos
 });
 
 async function query(queryObject: QueryConfig) {
