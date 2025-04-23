@@ -47,7 +47,7 @@ async function voteOnClip(clipId: string, voteType: string) {
     throw new ApiError(response.status, text || "Erro na requisição");
   }
 
-  return response;
+  return await response.json();
 }
 
 export { getAllClips, voteOnClip };

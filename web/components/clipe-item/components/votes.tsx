@@ -1,6 +1,6 @@
 "use client";
 import { VoteType } from "@/@types/Clipe";
-import { voteOnClip } from "@/lib/api/clips";
+import { ApiError, voteOnClip } from "@/lib/api/clips";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
@@ -22,32 +22,41 @@ function VotesComponent({
   const [value, setValue] = useState(previousVoteValue || "");
   const [isLoading, setIsLoading] = useState(false);
 
-  const increment = () =>
-    setVotes((prevCount) => (prevCount === -1 ? 1 : prevCount + 1));
+  const increment = () => setVotes((prevCount) => prevCount + 1);
 
-  const decrement = () =>
-    setVotes((prevCount) => (prevCount === 1 ? -1 : prevCount - 1));
+  const decrement = () => setVotes((prevCount) => prevCount - 1);
 
   const handleVote = async (vote: VoteType) => {
-    if (!vote) return;
+    setIsLoading(true);
 
     const previousValue = value;
     const previousVotes = votes;
 
     setValue(vote);
-    if (vote === "UP") {
-      increment();
-    } else {
-      decrement();
-    }
 
-    try {
-      setIsLoading(true);
-      await voteOnClip(clipId, vote);
-    } catch (err) {
+    const rollbackVote = () => {
       setValue(previousValue);
       setVotes(previousVotes);
-      onVoteError(vote, err);
+    };
+
+    const applyVoteChange = () => {
+      if (!vote) {
+        if (previousValue === "UP") decrement();
+        if (previousValue === "DOWN") increment();
+      } else {
+        if (vote === "UP") increment();
+        if (vote === "DOWN") decrement();
+      }
+    };
+
+    applyVoteChange();
+
+    try {
+      const response = await voteOnClip(clipId, vote || previousValue);
+      setVotes(response.total_votes);
+    } catch (err) {
+      rollbackVote();
+      if (err instanceof ApiError) onVoteError(vote || previousValue, err);
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +75,7 @@ function VotesComponent({
             disabled={isLoading}
             value="UP"
             aria-label="Toggle upvote"
-            className="data-[state=on]:bg-blue-500 data-[state=on]:text-white"
+            className="data-[state=on]:bg-blue-500 data-[state=on]:text-white cursor-pointer"
           >
             <ArrowUp className="h-4 w-4" />
           </ToggleGroupItem>
@@ -75,7 +84,7 @@ function VotesComponent({
             disabled={isLoading}
             value="DOWN"
             aria-label="Toggle downvote"
-            className="data-[state=on]:bg-red-500 data-[state=on]:text-white"
+            className="data-[state=on]:bg-red-500 data-[state=on]:text-white cursor-pointer"
           >
             <ArrowDown className="h-4 w-4" />
           </ToggleGroupItem>
