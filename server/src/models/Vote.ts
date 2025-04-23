@@ -69,4 +69,22 @@ async function getTotalVotes(clipId: string) {
   return results.rows[0] ? Number(results.rows[0].total_votes) : 0;
 }
 
-export default Object.freeze({ findOneById, save, getTotalVotes });
+type DeleteVoteParams = VoteId & { voteType: VoteType };
+async function exclude(vote: DeleteVoteParams) {
+  const { clipId, userId, voteType } = vote;
+
+  const deleteQueryText = `
+    DELETE FROM vote
+    WHERE clip_id = $1 AND user_id = $2 AND vote_type = $3
+    RETURNING *;
+  `;
+  const deleteQuery = {
+    text: deleteQueryText,
+    values: [clipId, userId, voteType.toUpperCase()],
+  };
+
+  const deleteResults = await database.query(deleteQuery);
+  return deleteResults.rows[0];
+}
+
+export default Object.freeze({ findOneById, save, getTotalVotes, exclude });

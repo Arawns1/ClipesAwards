@@ -3,6 +3,8 @@ import { UnauthorizedError } from "src/errors";
 
 export default async function getUser(app: FastifyInstance) {
   app.get("/me", async (req: FastifyRequest, res: FastifyReply) => {
+    console.group("[getUser]");
+    console.log(`[INFO] Requisição recebida`);
     try {
       const user = req.user;
 
@@ -25,6 +27,9 @@ export default async function getUser(app: FastifyInstance) {
       return res
         .code(500)
         .send({ error: "Erro interno. Tente novamente mais tarde" });
+    } finally {
+      console.info(`[INFO] Requisição finalizada`);
+      console.groupEnd();
     }
   });
 }

@@ -16,6 +16,8 @@ export async function voteOnClip(app: FastifyInstance) {
   app.post(
     "/clips/:clip_id/vote",
     async (req: voteOnClipRequest, res: FastifyReply) => {
+      console.group("[voteOnClip]");
+      console.log(`[INFO] Requisição recebida`);
       try {
         if (!req.params?.clip_id) {
           throw new ValidationError({
@@ -46,8 +48,20 @@ export async function voteOnClip(app: FastifyInstance) {
         const { vote_type: voteType } = req.body;
         const userId = req.user.id;
 
-        await Vote.save({ clipId, userId, voteType });
-        res.status(200);
+        const existingVote = await Vote.findOneById(
+          { clipId, userId },
+          { throwable: false },
+        );
+
+        if (existingVote && existingVote.vote_type === voteType.toUpperCase()) {
+          await Vote.exclude({ clipId, userId, voteType });
+        } else {
+          await Vote.save({ clipId, userId, voteType });
+        }
+
+        const totalVotes = await Vote.getTotalVotes(clipId);
+
+        res.status(200).send({ total_votes: totalVotes });
       } catch (err) {
         if (
           err instanceof NotFoundError ||
@@ -61,6 +75,9 @@ export async function voteOnClip(app: FastifyInstance) {
         return res
           .code(500)
           .send({ error: "Erro interno. Tente novamente mais tarde" });
+      } finally {
+        console.info(`[INFO] Requisição finalizada`);
+        console.groupEnd();
       }
     },
   );
