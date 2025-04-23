@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
-import { VoteType } from "models/Vote";
+import Vote, { VoteType } from "models/Vote";
 import { NotFoundError, UnauthorizedError, ValidationError } from "src/errors";
 
 type voteOnClipBody = {
@@ -46,10 +46,7 @@ export async function voteOnClip(app: FastifyInstance) {
         const { vote_type: voteType } = req.body;
         const userId = req.user.id;
 
-        // const voteSaved = await vote.save({ clipId, userId, voteType });
-        // const totalVotes = await vote.getTotalVotes(clipId);
-
-        // res.status(200).send({ ...voteSaved, totalVotes });
+        await Vote.save({ clipId, userId, voteType });
         res.status(200);
       } catch (err) {
         if (
