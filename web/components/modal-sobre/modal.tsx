@@ -15,9 +15,9 @@ export default function ModalSobreComponent() {
     <div>
       <Dialog>
         <DialogTrigger asChild>
-          <div>
-            <Button variant="ghost">Sobre</Button>
-          </div>
+          <Button variant="ghost" className="cursor-pointer">
+            Sobre
+          </Button>
         </DialogTrigger>
         <DialogContent className="border p-4 h-[400px] w-[450px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:max-w-3xl bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border z-[9999] flex flex-col">
           <DialogHeader>

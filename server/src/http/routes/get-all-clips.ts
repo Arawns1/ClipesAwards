@@ -1,10 +1,11 @@
 import { Attachment, Message } from "discord.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getCursors, getMessagesFromClipsChannel } from "src/ws/get-all-clips";
+import vote from "models/Vote";
 
 type GetAllClipsRequest = FastifyRequest<{
   Querystring: { cursor: string | null; direction: DirectionCursor };
-}>;
+}> & { user?: { id: string } };
 export type MessageWithAttachment = {
   message: Message;
   attachment: Attachment;
@@ -29,15 +30,13 @@ export async function getAllClips(app: FastifyInstance) {
         direction,
       );
 
-      const [clips, cursors] = await Promise.all([
-        messages.map(mapMessageToClips),
-        getCursors(messages, FETCH_SIZE, direction),
-      ]);
+      const clips = await Promise.all(
+        messages.map(async (mes) => await mapMessageToClips(mes, req.user)),
+      );
 
-      // const { prevCursor, nextCursor } = cursors;
+      const cursors = await getCursors(messages, FETCH_SIZE, direction);
 
       const responseBody = {
-        // prevCursor,
         nextCursor: cursors.nextCursor,
         data: clips,
       };
@@ -55,17 +54,36 @@ export async function getAllClips(app: FastifyInstance) {
   });
 }
 
-function mapMessageToClips({ message, attachment }: MessageWithAttachment) {
+async function mapMessageToClips(
+  messageProps: MessageWithAttachment,
+  user?: { id: string },
+) {
+  const { message, attachment } = messageProps;
+
   const { createdTimestamp, author, id } = message;
+  const clipId = attachment.id;
+  let previousVote;
+
+  if (user) {
+    previousVote = await vote.findOneById(
+      { userId: user.id, clipId },
+      { throwable: false },
+    );
+  }
+
+  const totalVotes = await vote.getTotalVotes(clipId);
 
   return {
-    clip_id: attachment.id,
+    clip_id: clipId,
     posted_at: new Date(createdTimestamp).toISOString(),
     video_src: attachment.url,
     user: {
-      name: author.globalName,
+      id: author.id,
+      username: author.globalName,
       avatar_url: author.avatarURL(),
     },
     message_id: id,
+    previous_user_vote: previousVote?.vote_type || null,
+    total_votes: totalVotes || 0,
   };
 }

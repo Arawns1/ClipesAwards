@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -10,15 +7,19 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Separator } from "../ui/separator";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import * as React from "react";
 import packageJson from "../../package.json";
+import LoginComponent from "../login/login-component";
 import ModalSobreComponent from "../modal-sobre/modal";
+import { Separator } from "../ui/separator";
 
 export function Header() {
   return (
-    <div>
-      <NavigationMenu>
-        <div className="flex items-center space-x-2 ">
+    <header className="flex flex-col items-start justify-start">
+      <NavigationMenu className="max-w-full w-full justify-start">
+        <div id="logo" className="flex items-center space-x-2 ">
           <div className="flex items-start">
             <h1 className="text-2xl font-extralight tracking-wider">
               Clipe Awards
@@ -38,15 +39,19 @@ export function Header() {
             </Link>
           </NavigationMenuItem>
 
-          <NavigationMenuItem>
+          <NavigationMenuItem className="cursor-pointer">
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               <ModalSobreComponent />
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
+
+        <div className="ml-auto">
+          <LoginComponent />
+        </div>
       </NavigationMenu>
       <Separator className="my-4" />
-    </div>
+    </header>
   );
 }
 
