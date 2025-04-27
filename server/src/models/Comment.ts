@@ -100,9 +100,28 @@ async function update(comment_id: string, comment: UpdateCommentParams) {
   return results.rows[0];
 }
 
+type DeleteCommentParams = Omit<SaveCommentParams, "text">;
+async function exclude(comment_id: string, comment: DeleteCommentParams) {
+  const { clip_id, user_id } = comment;
+
+  const deleteQueryText = `
+    DELETE FROM comment
+    WHERE id = $1 and clip_id = $2 AND user_id = $3
+    RETURNING *;
+  `;
+  const deleteQuery = {
+    text: deleteQueryText,
+    values: [comment_id, clip_id, user_id],
+  };
+
+  const deleteResults = await database.query(deleteQuery);
+  return deleteResults.rows[0];
+}
+
 export default Object.freeze({
   findAllByClipId,
   save,
   countCommentsByClipId,
   update,
+  exclude,
 });
