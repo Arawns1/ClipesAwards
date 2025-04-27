@@ -5,7 +5,8 @@ export const shorthands: ColumnDefinitions | undefined = undefined;
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.createTable("comment", {
     id: {
-      type: "SERIAL",
+      type: "uuid",
+      default: pgm.func("gen_random_uuid()"),
       notNull: true,
       primaryKey: true,
     },

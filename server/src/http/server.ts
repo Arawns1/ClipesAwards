@@ -4,9 +4,14 @@ import { BASE_URL, HOST, PORT } from "src/constants";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
 import routes from "./routes/app.routes";
+import { setTimeout as delay } from "node:timers/promises";
 
 export const startServer = async () => {
   const app = fastify();
+
+  app.addHook("preHandler", async (request, reply) => {
+    await delay(2000);
+  });
 
   await app.register(fastifyCookie, {
     secret: process.env.COOKIE_SECRET,

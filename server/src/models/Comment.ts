@@ -36,4 +36,24 @@ async function findAllByClipId(clipId: string, options?: ParamsOptions) {
   }));
 }
 
-export default Object.freeze({ findAllByClipId });
+type SaveCommentParams = {
+  clip_id: string;
+  user_id: string;
+  text: string;
+};
+async function save(comment: SaveCommentParams) {
+  const queryText = `
+          INSERT INTO comment (text, clip_id, user_id)
+          VALUES ($1, $2, $3)
+          RETURNING *;
+        `;
+  const query = {
+    text: queryText,
+    values: [comment.text, comment.clip_id, comment.user_id],
+  };
+
+  const results = await database.query(query);
+  return results.rows[0];
+}
+
+export default Object.freeze({ findAllByClipId, save });
