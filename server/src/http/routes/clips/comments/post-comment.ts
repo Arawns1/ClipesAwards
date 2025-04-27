@@ -7,7 +7,7 @@ type NewCommentBody = {
 };
 
 type PostCommentsRequest = FastifyRequest<{
-  Params: { clip_id?: string | null };
+  Params: { clip_id: string };
   Body: NewCommentBody;
   user?: { id: string } | null;
 }>;
