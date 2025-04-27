@@ -2,6 +2,7 @@ import { Attachment, Message } from "discord.js";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getCursors, getMessagesFromClipsChannel } from "src/ws/get-all-clips";
 import vote from "models/Vote";
+import Comment from "models/Comment";
 
 type GetAllClipsRequest = FastifyRequest<{
   Querystring: { cursor: string | null; direction: DirectionCursor };
@@ -60,7 +61,7 @@ async function mapMessageToClips(
 ) {
   const { message, attachment } = messageProps;
 
-  const { createdTimestamp, author, id } = message;
+  const { createdTimestamp, author } = message;
   const clipId = attachment.id;
   let previousVote;
 
@@ -71,19 +72,21 @@ async function mapMessageToClips(
     );
   }
 
-  const totalVotes = await vote.getTotalVotes(clipId);
+  const [totalVotes, totalComments] = await Promise.all([
+    vote.getTotalVotes(clipId),
+    Comment.countCommentsByClipId(clipId),
+  ]);
 
   return {
     clip_id: clipId,
     posted_at: new Date(createdTimestamp).toISOString(),
     video_src: attachment.url,
     user: {
-      id: author.id,
       username: author.globalName,
       avatar_url: author.avatarURL(),
     },
-    message_id: id,
     previous_user_vote: previousVote?.vote_type || null,
-    total_votes: totalVotes || 0,
+    total_votes: totalVotes,
+    total_comments: totalComments,
   };
 }

@@ -56,4 +56,19 @@ async function save(comment: SaveCommentParams) {
   return results.rows[0];
 }
 
-export default Object.freeze({ findAllByClipId, save });
+async function countCommentsByClipId(clipId: string) {
+  const queryText = `
+           SELECT COUNT(*) as comments_count
+           FROM comment
+           WHERE clip_id = $1
+        `;
+  const query = {
+    text: queryText,
+    values: [clipId],
+  };
+
+  const results = await database.query(query);
+  return results.rows[0] ? Number(results.rows[0].comments_count) : 0;
+}
+
+export default Object.freeze({ findAllByClipId, save, countCommentsByClipId });
