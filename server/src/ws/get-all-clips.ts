@@ -3,7 +3,7 @@ import { ID_CANAL_CLIPES } from "src/constants";
 import {
   DirectionCursor,
   MessageWithAttachment,
-} from "src/http/routes/get-all-clips";
+} from "src/http/routes/clips/get-all-clips";
 import { client } from "./bot";
 import {
   filterByAttachmentType,

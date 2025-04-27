@@ -1,12 +1,13 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
-import routes from "./routes";
 import { BASE_URL, HOST, PORT } from "src/constants";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
+import routes from "./routes/app.routes";
 
 export const startServer = async () => {
   const app = fastify();
+
   await app.register(fastifyCookie, {
     secret: process.env.COOKIE_SECRET,
   });

@@ -1,5 +1,4 @@
-import { DecodePayloadType, UserType } from "@fastify/jwt";
-import { FastifyRequest, FastifyReply, FastifyInstance } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import Users from "models/Users";
 import { clearAuthCookies } from "../cookies/auth-cookies";
 
@@ -9,7 +8,7 @@ type JWTDecoded = {
   ext: number;
 };
 
-export async function authMiddleware(
+export default async function authMiddleware(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
