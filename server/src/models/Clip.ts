@@ -14,7 +14,7 @@ async function findOneById(clipId: string, options?: ParamsOptions) {
 
   const results = await database.query(query);
 
-  if (results.rowCount === 0 && options.throwable) {
+  if (results.rowCount === 0 && options?.throwable) {
     throw new NotFoundError({
       message: `O clip com o ID '${clipId}' não foi encontrado no sistema.`,
       action: 'Verifique se o "id" está digitado corretamente.',

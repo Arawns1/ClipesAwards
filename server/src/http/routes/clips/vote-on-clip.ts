@@ -14,7 +14,7 @@ type voteOnClipRequest = FastifyRequest<{
 
 export async function voteOnClip(app: FastifyInstance) {
   app.post(
-    "/clips/:clip_id/vote",
+    "/:clip_id/vote",
     async (req: voteOnClipRequest, res: FastifyReply) => {
       console.group("[voteOnClip]");
       console.log(`[INFO] Requisição recebida`);

@@ -13,7 +13,7 @@ export type MessageWithAttachment = {
 export type DirectionCursor = "forward" | "backward";
 
 export async function getAllClips(app: FastifyInstance) {
-  app.get("/clips", async (req: GetAllClipsRequest, res: FastifyReply) => {
+  app.get("/", async (req: GetAllClipsRequest, res: FastifyReply) => {
     console.group("[getAllClips]");
     console.log(`[INFO] Requisição recebida`);
     try {

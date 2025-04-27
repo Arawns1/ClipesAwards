@@ -18,7 +18,7 @@ async function findOneById(voteId: VoteId, options?: ParamsOptions) {
   };
 
   const results = await database.query(query);
-  if (results.rowCount === 0 && options.throwable) {
+  if (results.rowCount === 0 && options?.throwable) {
     throw new NotFoundError({
       message: `Voto com o ID especificado não foi encontrado.`,
       action: `Por favor, verifique se o 'clipId' e o 'userId' estão corretos.`,
