@@ -1,21 +1,35 @@
 "use client";
+import { VoteType } from "@/@types/Clipe";
 import useGetAllClipes from "@/hooks/useFetchAllClipes";
+import { useState } from "react";
+import ClipeItem from "../clipe-item/clipe-item";
 import CongratulationsAlert from "./components/congratulations-alert";
 import InfiniteScroll from "./components/infinite-scroll";
-import { CommentsComponent, VotesComponent } from "../clipe-item/components";
-import ClipeItem from "../clipe-item/clipe-item";
 import LoginVoteAlert from "./components/login-vote-alert";
-import { VoteType } from "@/@types/Clipe";
-import { useState } from "react";
+import {
+  CommentsComponent,
+  CommentsDialog,
+  VotesComponent,
+} from "../clipe-item/components";
 
 export function ClipesList() {
   const response = useGetAllClipes();
+
+  // Login Alert
   const [isLoginError, setIsLoginError] = useState(false);
   const [errorVoteType, setErrorVoteType] = useState<VoteType | null>(null);
-
   const showVoteLoginAlert = (vote: VoteType) => {
     setErrorVoteType(vote);
     setIsLoginError(true);
+  };
+
+  // Comments Dialog
+  const [commentsDialog, setCommentsDialog] = useState<{
+    open: boolean;
+    clipId: string | null;
+  }>({ open: false, clipId: null });
+  const openComments = (clipId: string) => {
+    setCommentsDialog({ open: true, clipId });
   };
 
   return (
@@ -36,10 +50,22 @@ export function ClipesList() {
                 previousVoteValue={clipe.previous_user_vote}
                 onVoteError={showVoteLoginAlert}
               />
-              <CommentsComponent />
+              <CommentsComponent
+                initialCommentsCount={clipe.total_comments}
+                onClick={() => openComments(clipe.clip_id)}
+              />
             </ClipeItem.Actions>
           </ClipeItem>
         )}
+      />
+
+      <CommentsDialog
+        open={commentsDialog.open}
+        clipId={commentsDialog.clipId}
+        onOpenChange={(open) => {
+          if (!open) setCommentsDialog({ open: false, clipId: null });
+          else setCommentsDialog((st) => ({ ...st, open }));
+        }}
       />
       <LoginVoteAlert
         open={isLoginError}

@@ -1,4 +1,4 @@
-import { User } from "./User";
+import { UserWithoutId } from "./User";
 
 export type ClipeDTO = {
   nextCursor: string;
@@ -10,7 +10,7 @@ export type Clipe = {
   clip_id: string;
   posted_at: string;
   video_src: string;
-  user: Omit<User, "id">;
+  user: UserWithoutId;
   previous_user_vote?: VoteType;
   total_votes: number;
   total_comments: number;

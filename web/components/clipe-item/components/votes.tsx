@@ -64,32 +64,30 @@ function VotesComponent({
 
   return (
     <>
-      <div className="flex items-center mt-2">
-        <ToggleGroup
-          size={"sm"}
-          type="single"
-          value={value}
-          onValueChange={handleVote}
+      <ToggleGroup
+        size={"sm"}
+        type="single"
+        value={value}
+        onValueChange={handleVote}
+      >
+        <ToggleGroupItem
+          disabled={isLoading}
+          value="UP"
+          aria-label="Toggle upvote"
+          className="data-[state=on]:bg-blue-500 data-[state=on]:text-white cursor-pointer"
         >
-          <ToggleGroupItem
-            disabled={isLoading}
-            value="UP"
-            aria-label="Toggle upvote"
-            className="data-[state=on]:bg-blue-500 data-[state=on]:text-white cursor-pointer"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </ToggleGroupItem>
-          <span className="mx-2 text font-bold">{votes}</span>
-          <ToggleGroupItem
-            disabled={isLoading}
-            value="DOWN"
-            aria-label="Toggle downvote"
-            className="data-[state=on]:bg-red-500 data-[state=on]:text-white cursor-pointer"
-          >
-            <ArrowDown className="h-4 w-4" />
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+          <ArrowUp className="h-4 w-4" />
+        </ToggleGroupItem>
+        <span className="mx-2 text font-bold">{votes}</span>
+        <ToggleGroupItem
+          disabled={isLoading}
+          value="DOWN"
+          aria-label="Toggle downvote"
+          className="data-[state=on]:bg-red-500 data-[state=on]:text-white cursor-pointer"
+        >
+          <ArrowDown className="h-4 w-4" />
+        </ToggleGroupItem>
+      </ToggleGroup>
     </>
   );
 }

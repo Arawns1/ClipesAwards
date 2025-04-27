@@ -1,8 +1,8 @@
 import { UserInfo, UserInfoSkeleton } from "./user-info";
 import { VideoComponent, VideoComponentSkeleton } from "./video";
 import { VotesComponent } from "./votes";
+import { CommentsComponent, CommentsDialog } from "./comments";
 import ActionsComponent from "./actions";
-import CommentsComponent from "./comments";
 
 export {
   UserInfo,
@@ -10,6 +10,7 @@ export {
   VideoComponent,
   VideoComponentSkeleton,
   VotesComponent,
-  CommentsComponent,
   ActionsComponent,
+  CommentsComponent,
+  CommentsDialog,
 };
