@@ -4,14 +4,9 @@ import { BASE_URL, HOST, PORT } from "src/constants";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
 import routes from "./routes/app.routes";
-import { setTimeout as delay } from "node:timers/promises";
 
 export const startServer = async () => {
   const app = fastify();
-
-  app.addHook("preHandler", async (request, reply) => {
-    await delay(2000);
-  });
 
   await app.register(fastifyCookie, {
     secret: process.env.COOKIE_SECRET,
@@ -25,7 +20,7 @@ export const startServer = async () => {
   await app.register(fastifyJwt, {
     secret: process.env.JWT_SECRET,
     cookie: {
-      cookieName: "clipes_awards_token",
+      cookieName: process.env.COOKIE_TOKEN_NAME,
       signed: true,
     },
   });

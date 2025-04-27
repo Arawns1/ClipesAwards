@@ -5,7 +5,7 @@ import { status } from "./status";
 import commentsRoutes from "./clips/comments/comments.routes";
 import authRoutes from "./auth/auth.routes";
 import clipsRoutes from "./clips/clips.routes";
-import authMiddleware from "../middlewares/authMiddleware";
+import authMiddleware from "../middlewares/auth-middleware";
 
 export default async function routes(app: FastifyInstance) {
   app.addHook("onRequest", authMiddleware);
