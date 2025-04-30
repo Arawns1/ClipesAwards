@@ -17,11 +17,8 @@ function usePostComment(clipId: string) {
   return useMutation({
     mutationFn: (comment: string) => postComment(clipId, comment),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", clipId] });
-      console.log("Comentário postado com sucesso!");
-    },
-    onError: (error) => {
-      console.error("Erro ao postar comentário:", error);
+      queryClient.refetchQueries({ queryKey: ["comments", clipId] });
+      queryClient.invalidateQueries({ queryKey: ["clipes"] });
     },
   });
 }

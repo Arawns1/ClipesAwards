@@ -27,6 +27,11 @@ type LoginAvatarProps = {
 function LoginAvatar({ userData: user }: LoginAvatarProps) {
   const { logout } = useAuth();
 
+  const handleLogout = () => {
+    logout();
+    return <LoginButton />;
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -44,7 +49,7 @@ function LoginAvatar({ userData: user }: LoginAvatarProps) {
         <DropdownMenuContent side="bottom" align="end" className="mt-2">
           <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout} className="cursor-pointer">
+          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
             <LogOut />
             <span>Sair</span>
           </DropdownMenuItem>

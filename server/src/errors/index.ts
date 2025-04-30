@@ -60,7 +60,6 @@ class BaseError extends Error {
 }
 
 interface NotFoundErrorParams extends Partial<BaseErrorParams> {}
-
 export class NotFoundError extends BaseError {
   constructor({
     message,

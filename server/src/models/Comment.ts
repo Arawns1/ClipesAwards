@@ -1,5 +1,6 @@
 import database from "infra/database";
 import { NotFoundError } from "src/errors";
+import Clip from "./Clip";
 type ParamsOptions = {
   throwable: boolean;
 };
@@ -8,7 +9,8 @@ async function findAllByClipId(clipId: string, options?: ParamsOptions) {
   const queryText = `SELECT c.id, c.text, c.created_at, u.avatar_url, u.username 
                      FROM comment c 
                      JOIN users u ON c.user_id = u.id 
-                     WHERE c.clip_id = $1`;
+                     WHERE c.clip_id = $1
+                     ORDER BY c.created_at DESC`;
   const query = {
     text: queryText,
     values: [clipId],
@@ -42,6 +44,11 @@ type SaveCommentParams = {
   text: string;
 };
 async function save(comment: SaveCommentParams) {
+  const clip = await Clip.findOneById(comment.clip_id, { throwable: false });
+  if (!clip) {
+    await Clip.save(comment.clip_id);
+  }
+
   const queryText = `
           INSERT INTO comment (text, clip_id, user_id)
           VALUES ($1, $2, $3)

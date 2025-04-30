@@ -4,7 +4,6 @@ export function parseApiError(err: unknown): ApiError {
   if (
     err &&
     typeof err === "object" &&
-    "name" in err &&
     "message" in err &&
     "statusCode" in err
   ) {

@@ -6,11 +6,8 @@ import ClipeItem from "../clipe-item/clipe-item";
 import CongratulationsAlert from "./components/congratulations-alert";
 import InfiniteScroll from "./components/infinite-scroll";
 import LoginVoteAlert from "./components/login-vote-alert";
-import {
-  CommentsComponent,
-  CommentsDialog,
-  VotesComponent,
-} from "../clipe-item/components";
+import { VotesComponent } from "../clipe-item/components";
+import { CommentsComponent, CommentsDialog } from "../comments";
 
 export function ClipesList() {
   const response = useGetAllClipes();
@@ -19,6 +16,7 @@ export function ClipesList() {
   const [isLoginError, setIsLoginError] = useState(false);
   const [errorVoteType, setErrorVoteType] = useState<VoteType | null>(null);
   const showVoteLoginAlert = (vote: VoteType) => {
+    console.log("opi");
     setErrorVoteType(vote);
     setIsLoginError(true);
   };
@@ -59,19 +57,24 @@ export function ClipesList() {
         )}
       />
 
-      <CommentsDialog
-        open={commentsDialog.open}
-        clipId={commentsDialog.clipId}
-        onOpenChange={(open) => {
-          if (!open) setCommentsDialog({ open: false, clipId: null });
-          else setCommentsDialog((st) => ({ ...st, open }));
-        }}
-      />
-      <LoginVoteAlert
-        open={isLoginError}
-        onOpenChange={setIsLoginError}
-        errorVoteType={errorVoteType}
-      />
+      {commentsDialog.open && (
+        <CommentsDialog
+          open={true}
+          clipId={commentsDialog.clipId}
+          onOpenChange={(open) => {
+            if (!open) setCommentsDialog({ open: false, clipId: null });
+            else setCommentsDialog((st) => ({ ...st, open }));
+          }}
+        />
+      )}
+
+      {isLoginError && (
+        <LoginVoteAlert
+          open={isLoginError}
+          onOpenChange={setIsLoginError}
+          errorVoteType={errorVoteType}
+        />
+      )}
     </>
   );
 }

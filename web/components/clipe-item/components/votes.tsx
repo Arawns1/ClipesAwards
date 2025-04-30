@@ -1,9 +1,10 @@
 "use client";
 import { VoteType } from "@/@types/Clipe";
-import { ApiError, voteOnClip } from "@/lib/api/clips";
+import { voteOnClip } from "@/lib/api/clips";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
+import { ApiError } from "@/@types/Errors";
 
 type VotesComponentProps = {
   clipId: string;
@@ -54,9 +55,12 @@ function VotesComponent({
     try {
       const response = await voteOnClip(clipId, vote || previousValue);
       setVotes(response.total_votes);
-    } catch (err) {
+    } catch (error) {
       rollbackVote();
-      if (err instanceof ApiError) onVoteError(vote || previousValue, err);
+      const err = error as ApiError;
+      if (err.statusCode === 401) {
+        onVoteError(vote || previousValue, err);
+      }
     } finally {
       setIsLoading(false);
     }

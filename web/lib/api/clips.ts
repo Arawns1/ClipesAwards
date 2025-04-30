@@ -18,7 +18,8 @@ async function getAllClips(params: QueryFunctionContext) {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar os clipes");
+    const body = await response.json().catch(() => ({}));
+    throw parseApiError({ ...body, statusCode: response.status });
   }
 
   return await response.json();
