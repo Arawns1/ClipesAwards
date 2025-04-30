@@ -6,7 +6,7 @@ import {
   DISCORD_GET_USER_PROFILE_URL,
   TOKEN_DAYS_EXPIRATION,
 } from "src/constants";
-import { UnauthorizedError } from "src/errors";
+import { InternalServerError, UnauthorizedError } from "src/errors";
 import { setAuthCookies } from "src/http/cookies/auth-cookies";
 
 type DiscordAuthCallbackRequest = FastifyRequest<{
@@ -64,9 +64,8 @@ export async function getDiscordCallback(app: FastifyInstance) {
         return res.code(error.statusCode).send(error);
       }
       console.error("[ERROR] Erro interno: ", error);
-      return res
-        .code(500)
-        .send({ error: "Erro interno. Tente novamente mais tarde" });
+      error = new InternalServerError(error);
+      return res.code(error.statusCode).send(error);
     }
   });
 }

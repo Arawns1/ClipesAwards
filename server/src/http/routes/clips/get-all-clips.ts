@@ -3,6 +3,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { getCursors, getMessagesFromClipsChannel } from "src/ws/get-all-clips";
 import vote from "models/Vote";
 import Comment from "models/Comment";
+import { InternalServerError } from "src/errors";
 
 type GetAllClipsRequest = FastifyRequest<{
   Querystring: { cursor: string | null; direction: DirectionCursor };
@@ -45,9 +46,8 @@ export async function getAllClips(app: FastifyInstance) {
       return res.code(200).send(responseBody);
     } catch (err) {
       console.error("[ERROR] Erro interno: ", err);
-      return res
-        .code(500)
-        .send({ error: "Erro interno. Tente novamente mais tarde" });
+      err = new InternalServerError(err);
+      return res.code(err.statusCode).send(err);
     } finally {
       console.info(`[INFO] Requisição finalizada`);
       console.groupEnd();

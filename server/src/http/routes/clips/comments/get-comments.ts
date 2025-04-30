@@ -1,6 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Comments from "models/Comment";
-import { NotFoundError, ValidationError } from "src/errors";
+import {
+  InternalServerError,
+  NotFoundError,
+  ValidationError,
+} from "src/errors";
 
 type GetCommentsRequest = FastifyRequest<{
   Params: { clip_id?: string | null };
@@ -31,9 +35,8 @@ export async function getAllComments(app: FastifyInstance) {
 
       console.error("[ERROR] Erro interno: ", err);
 
-      return res
-        .code(500)
-        .send({ error: "Erro interno. Tente novamente mais tarde" });
+      err = new InternalServerError(err);
+      return res.code(err.statusCode).send(err);
     } finally {
       console.info(`[INFO] Requisição finalizada`);
       console.groupEnd();

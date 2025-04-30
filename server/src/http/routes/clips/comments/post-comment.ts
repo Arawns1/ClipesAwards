@@ -1,5 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { NotFoundError, UnauthorizedError, ValidationError } from "src/errors";
+import {
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from "src/errors";
 import Comments from "models/Comment";
 
 type NewCommentBody = {
@@ -35,7 +40,7 @@ export async function postComment(app: FastifyInstance) {
       }
       if (!req.user) {
         throw new UnauthorizedError({
-          message: `Usuário não autorizado. Faça login e tente novamente.`,
+          message: `Você precisar estar logado para fazer comentários. Faça login e tente novamente.`,
           stack: new Error().stack,
           errorLocationCode: `RESOURCE:POST_COMMENT:POST_COMMENT:UNAUTHORIZED_USER`,
           key: "user",
@@ -63,10 +68,8 @@ export async function postComment(app: FastifyInstance) {
       }
 
       console.error("[ERROR] Erro interno: ", err);
-
-      return res
-        .code(500)
-        .send({ error: "Erro interno. Tente novamente mais tarde" });
+      err = new InternalServerError(err);
+      return res.code(err.statusCode).send(err);
     } finally {
       console.info(`[INFO] Requisição finalizada`);
       console.groupEnd();

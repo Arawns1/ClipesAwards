@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import database from "infra/database";
+import { InternalServerError } from "src/errors";
 
 export async function status(app: FastifyInstance) {
   app.get("/status", async (request, response) => {
@@ -45,9 +46,8 @@ export async function status(app: FastifyInstance) {
       return response.status(200).send(responseBody);
     } catch (err) {
       console.error("[ERROR] Erro interno: ", err);
-      return response
-        .code(500)
-        .send({ error: "Erro interno. Tente novamente mais tarde" });
+      err = new InternalServerError(err);
+      return response.code(err.statusCode).send(err);
     } finally {
       console.info(`[INFO] Requisição finalizada`);
       console.groupEnd();

@@ -1,5 +1,6 @@
-import { env } from "@/env";
 import { CommentDTO } from "@/@types/Comments";
+import { env } from "@/env";
+import { parseApiError } from "./parse-api-error";
 
 export async function getCommentsByClipId(clipId: string): Promise<CommentDTO> {
   const fetchURL = new URL(
@@ -16,7 +17,8 @@ export async function getCommentsByClipId(clipId: string): Promise<CommentDTO> {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar os comentários");
+    const body = await response.json().catch(() => ({}));
+    throw parseApiError({ ...body, statusCode: response.status });
   }
 
   const data: CommentDTO = await response.json();
@@ -44,9 +46,9 @@ export async function postComment(
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao salvar comentario");
+    const body = await response.json().catch(() => ({}));
+    throw parseApiError({ ...body, statusCode: response.status });
   }
-
   const data: CommentDTO = await response.json();
   return data;
 }

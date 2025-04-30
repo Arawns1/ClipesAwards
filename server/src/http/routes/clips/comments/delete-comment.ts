@@ -1,5 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { NotFoundError, UnauthorizedError, ValidationError } from "src/errors";
+import {
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+  ValidationError,
+} from "src/errors";
 import Comments from "models/Comment";
 
 type PatchCommentRequest = FastifyRequest<{
@@ -59,9 +64,8 @@ export async function deleteComment(app: FastifyInstance) {
 
         console.error("[ERROR] Erro interno: ", err);
 
-        return res
-          .code(500)
-          .send({ error: "Erro interno. Tente novamente mais tarde" });
+        err = new InternalServerError(err);
+        return res.code(err.statusCode).send(err);
       } finally {
         console.info(`[INFO] Requisição finalizada`);
         console.groupEnd();
