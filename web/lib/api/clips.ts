@@ -1,5 +1,6 @@
 import { env } from "@/env";
 import { QueryFunctionContext } from "@tanstack/react-query";
+import { parseApiError } from "./parse-api-error";
 
 async function getAllClips(params: QueryFunctionContext) {
   // const direction = params.direction;
@@ -17,7 +18,8 @@ async function getAllClips(params: QueryFunctionContext) {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao buscar os clipes");
+    const body = await response.json().catch(() => ({}));
+    throw parseApiError({ ...body, statusCode: response.status });
   }
 
   return await response.json();
@@ -38,25 +40,12 @@ async function voteOnClip(clipId: string, voteType: string) {
     body: JSON.stringify(body),
   });
 
-  if (response.status === 401) {
-    throw new ApiError(401, "Não autenticado");
-  }
-
   if (!response.ok) {
-    const text = await response.text().catch(() => "");
-    throw new ApiError(response.status, text || "Erro na requisição");
+    const body = await response.json().catch(() => ({}));
+    throw parseApiError({ ...body, statusCode: response.status });
   }
 
   return await response.json();
 }
 
 export { getAllClips, voteOnClip };
-
-export class ApiError extends Error {
-  statusCode: number;
-  constructor(status: number, message?: string) {
-    super(message);
-    this.name = "ApiError";
-    this.statusCode = status;
-  }
-}

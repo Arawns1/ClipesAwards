@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { UserWithoutId } from "@/@types/User";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import dateFormatter from "@/lib/date";
-import { User } from "@/@types/User";
+import { useEffect, useState } from "react";
 
 export type UserInfoProps = {
-  user: User;
+  user: UserWithoutId;
   posted_at: string;
 };
 

@@ -14,7 +14,7 @@ async function findOneById(userId: string, options?: ParamsOptions) {
 
   const results = await database.query(query);
 
-  if (results.rowCount === 0 && options.throwable) {
+  if (results.rowCount === 0 && options?.throwable) {
     throw new NotFoundError({
       message: `O user com o ID '${userId}' não foi encontrado no sistema.`,
       action: 'Verifique se o "id" está digitado corretamente.',

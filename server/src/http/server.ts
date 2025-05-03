@@ -1,12 +1,13 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
-import routes from "./routes";
 import { BASE_URL, HOST, PORT } from "src/constants";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
+import routes from "./routes/app.routes";
 
 export const startServer = async () => {
   const app = fastify();
+
   await app.register(fastifyCookie, {
     secret: process.env.COOKIE_SECRET,
   });
@@ -19,7 +20,7 @@ export const startServer = async () => {
   await app.register(fastifyJwt, {
     secret: process.env.JWT_SECRET,
     cookie: {
-      cookieName: "clipes_awards_token",
+      cookieName: process.env.COOKIE_TOKEN_NAME,
       signed: true,
     },
   });
