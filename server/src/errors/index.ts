@@ -60,7 +60,6 @@ class BaseError extends Error {
 }
 
 interface NotFoundErrorParams extends Partial<BaseErrorParams> {}
-
 export class NotFoundError extends BaseError {
   constructor({
     message,
@@ -128,6 +127,32 @@ export class UnauthorizedError extends BaseError {
         "Verifique se você está autenticado com uma sessão ativa e tente novamente.",
       requestId: requestId,
       statusCode: 401,
+      stack: stack,
+      errorLocationCode: errorLocationCode,
+    });
+  }
+}
+
+interface InternalServerErrorParams extends Partial<BaseErrorParams> {}
+export class InternalServerError extends BaseError {
+  constructor({
+    message,
+    action,
+    requestId,
+    errorId,
+    statusCode,
+    stack,
+    errorLocationCode,
+  }: InternalServerErrorParams) {
+    super({
+      name: "InternalServerError",
+      message:
+        "Um erro interno não esperado aconteceu.Tente novamente mais tarde",
+      action:
+        action || "Informe ao suporte o valor encontrado no campo 'error_id'.",
+      statusCode: statusCode || 500,
+      requestId: requestId,
+      errorId: errorId,
       stack: stack,
       errorLocationCode: errorLocationCode,
     });

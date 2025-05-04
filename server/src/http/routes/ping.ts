@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { InternalServerError } from "src/errors";
 
 export async function ping(app: FastifyInstance) {
   app.get("/ping", (request, response) => {
@@ -8,9 +9,8 @@ export async function ping(app: FastifyInstance) {
       return response.status(200).send("Pong!");
     } catch (err) {
       console.error("[ERROR] Erro interno: ", err);
-      return response
-        .code(500)
-        .send({ error: "Erro interno. Tente novamente mais tarde" });
+      err = new InternalServerError(err);
+      return response.code(err.statusCode).send(err);
     } finally {
       console.info(`[INFO] Requisição finalizada`);
       console.groupEnd();

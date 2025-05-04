@@ -1,9 +1,10 @@
 "use client";
 import { VoteType } from "@/@types/Clipe";
-import { ApiError, voteOnClip } from "@/lib/api/clips";
+import { voteOnClip } from "@/lib/api/clips";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
+import { ApiError } from "@/@types/Errors";
 
 type VotesComponentProps = {
   clipId: string;
@@ -54,9 +55,12 @@ function VotesComponent({
     try {
       const response = await voteOnClip(clipId, vote || previousValue);
       setVotes(response.total_votes);
-    } catch (err) {
+    } catch (error) {
       rollbackVote();
-      if (err instanceof ApiError) onVoteError(vote || previousValue, err);
+      const err = error as ApiError;
+      if (err.statusCode === 401) {
+        onVoteError(vote || previousValue, err);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -64,32 +68,30 @@ function VotesComponent({
 
   return (
     <>
-      <div className="flex items-center mt-2">
-        <ToggleGroup
-          size={"sm"}
-          type="single"
-          value={value}
-          onValueChange={handleVote}
+      <ToggleGroup
+        size={"sm"}
+        type="single"
+        value={value}
+        onValueChange={handleVote}
+      >
+        <ToggleGroupItem
+          disabled={isLoading}
+          value="UP"
+          aria-label="Toggle upvote"
+          className="data-[state=on]:bg-blue-500 data-[state=on]:text-white cursor-pointer"
         >
-          <ToggleGroupItem
-            disabled={isLoading}
-            value="UP"
-            aria-label="Toggle upvote"
-            className="data-[state=on]:bg-blue-500 data-[state=on]:text-white cursor-pointer"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </ToggleGroupItem>
-          <span className="mx-2 text font-bold">{votes}</span>
-          <ToggleGroupItem
-            disabled={isLoading}
-            value="DOWN"
-            aria-label="Toggle downvote"
-            className="data-[state=on]:bg-red-500 data-[state=on]:text-white cursor-pointer"
-          >
-            <ArrowDown className="h-4 w-4" />
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+          <ArrowUp className="h-4 w-4" />
+        </ToggleGroupItem>
+        <span className="mx-2 text font-bold">{votes}</span>
+        <ToggleGroupItem
+          disabled={isLoading}
+          value="DOWN"
+          aria-label="Toggle downvote"
+          className="data-[state=on]:bg-red-500 data-[state=on]:text-white cursor-pointer"
+        >
+          <ArrowDown className="h-4 w-4" />
+        </ToggleGroupItem>
+      </ToggleGroup>
     </>
   );
 }
