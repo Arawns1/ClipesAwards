@@ -2,7 +2,7 @@ import { ApiError } from "@/@types/Errors";
 import { usePostComment } from "@/hooks/useComments";
 import { Info } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 type Props = {
   clipId: string | null;
@@ -34,13 +34,13 @@ export default function AddCommentForm({ clipId }: Props) {
         className="flex gap-2 pt-2 border-t border-gray-700"
         onSubmit={handleAddComment}
       >
-        <Input
+        <Textarea
           name="comment"
-          type="text"
           placeholder="Digite seu comentário"
           data-state={isError ? "error" : "default"}
-          className="data-[state=error]:border-destructive"
+          className="data-[state=error]:border-destructive resize-none"
           disabled={isPending}
+          maxLength={280}
         />
         <Button form="add-comment-form" type="submit" disabled={isPending}>
           Enviar
