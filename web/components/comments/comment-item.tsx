@@ -25,14 +25,14 @@ function CommentItem({ data }: Props) {
           {user.username.slice(0, 2).toUpperCase()}
         </AvatarFallback>
       </Avatar>
-      <div>
+      <div className="w-full">
         <div className="flex gap-1 items-center">
           <p className="font-semibold capitalize">{user.username}</p>
           <span className="text-xs text-muted-foreground">
             {dateFormatter(created_at)}
           </span>
         </div>
-        <p>{text}</p>
+        <span className="break-all">{text}</span>
       </div>
     </div>
   );
