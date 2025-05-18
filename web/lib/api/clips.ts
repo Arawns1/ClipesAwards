@@ -48,4 +48,23 @@ async function voteOnClip(clipId: string, voteType: string) {
   return await response.json();
 }
 
-export { getAllClips, voteOnClip };
+async function getClipStats(clipId: string) {
+  const fetchURL = `${env.NEXT_PUBLIC_BASE_API_URL}/api/clips/${clipId}/stats`;
+
+  const response = await fetch(fetchURL, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw parseApiError({ ...body, statusCode: response.status });
+  }
+
+  return await response.json();
+}
+
+export { getAllClips, voteOnClip, getClipStats };
