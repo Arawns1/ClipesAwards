@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
 import { ApiError } from "@/@types/Errors";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type VotesComponentProps = {
   clipId: string;
@@ -96,4 +97,14 @@ function VotesComponent({
   );
 }
 
-export { VotesComponent };
+function VotesComponentSkeleton() {
+  return (
+    <div className="flex justify-center items-center mt-2 gap-2">
+      <Skeleton className="w-[36px] h-[36px]" />
+      <Skeleton className="w-[20px] h-[20px]" />
+      <Skeleton className="w-[36px] h-[36px]" />
+    </div>
+  );
+}
+
+export { VotesComponent, VotesComponentSkeleton };

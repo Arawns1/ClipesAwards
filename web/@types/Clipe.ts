@@ -11,9 +11,12 @@ export type Clipe = {
   posted_at: string;
   video_src: string;
   user: UserWithoutId;
+};
+
+export type VoteType = "UP" | "DOWN";
+
+export type ClipeStatsDTO = {
   previous_user_vote?: VoteType;
   total_votes: number;
   total_comments: number;
 };
-
-export type VoteType = "UP" | "DOWN";

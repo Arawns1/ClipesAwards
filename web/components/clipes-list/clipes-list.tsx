@@ -3,11 +3,10 @@ import { VoteType } from "@/@types/Clipe";
 import useGetAllClipes from "@/hooks/useFetchAllClipes";
 import { useState } from "react";
 import ClipeItem from "../clipe-item/clipe-item";
+import { CommentsDialog } from "../comments";
 import CongratulationsAlert from "./components/congratulations-alert";
 import InfiniteScroll from "./components/infinite-scroll";
 import LoginVoteAlert from "./components/login-vote-alert";
-import { VotesComponent } from "../clipe-item/components";
-import { CommentsComponent, CommentsDialog } from "../comments";
 
 export function ClipesList() {
   const response = useGetAllClipes();
@@ -41,18 +40,11 @@ export function ClipesList() {
           <ClipeItem key={clipe.clip_id}>
             <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
             <ClipeItem.Video src={clipe.video_src} />
-            <ClipeItem.Actions>
-              <VotesComponent
-                clipId={clipe.clip_id}
-                initialVotes={clipe.total_votes}
-                previousVoteValue={clipe.previous_user_vote}
-                onVoteError={showVoteLoginAlert}
-              />
-              <CommentsComponent
-                initialCommentsCount={clipe.total_comments}
-                onClick={() => openComments(clipe.clip_id)}
-              />
-            </ClipeItem.Actions>
+            <ClipeItem.Actions
+              clipId={clipe.clip_id}
+              onVoteError={showVoteLoginAlert}
+              onOpenComments={() => openComments(clipe.clip_id)}
+            />
           </ClipeItem>
         )}
       />

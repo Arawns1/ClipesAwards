@@ -1,7 +1,7 @@
 import { UserInfo, UserInfoSkeleton } from "./user-info";
 import { VideoComponent, VideoComponentSkeleton } from "./video";
-import { VotesComponent } from "./votes";
-import ActionsComponent from "./actions";
+import { VotesComponent, VotesComponentSkeleton } from "./votes";
+import { ActionsComponent, ActionsComponentSkeleton } from "./actions";
 
 export {
   UserInfo,
@@ -9,5 +9,7 @@ export {
   VideoComponent,
   VideoComponentSkeleton,
   VotesComponent,
+  VotesComponentSkeleton,
   ActionsComponent,
+  ActionsComponentSkeleton,
 };
