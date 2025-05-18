@@ -1,5 +1,6 @@
 import {
   ActionsComponent,
+  ActionsComponentSkeleton,
   UserInfo,
   UserInfoSkeleton,
   VideoComponent,

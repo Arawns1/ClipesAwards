@@ -1,6 +1,6 @@
 {
   "name": "clipes-awards-server",
-  "version": "1.5.1-beta",
+  "version": "1.5.2-beta",
   "main": "index.js",
   "scripts": {
     "dev": "npm run services:up && tsx watch src/index.ts",
