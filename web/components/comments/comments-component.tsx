@@ -1,12 +1,13 @@
 "use client";
 
 import { MessageCircle } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
 
 interface CommentsComponentProps {
   initialCommentsCount: number;
   onClick: () => void;
 }
-export default function CommentsComponent({
+function CommentsComponent({
   initialCommentsCount,
   onClick,
 }: CommentsComponentProps) {
@@ -24,3 +25,13 @@ export default function CommentsComponent({
     </div>
   );
 }
+
+function CommentsComponentSkeleton() {
+  return (
+    <div className="flex justify-center items-center mt-2 gap-2">
+      <Skeleton className="w-[36px] h-[36px]" />
+    </div>
+  );
+}
+
+export { CommentsComponent, CommentsComponentSkeleton };

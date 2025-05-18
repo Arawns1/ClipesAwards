@@ -32,10 +32,7 @@ export async function getAllClips(app: FastifyInstance) {
         direction,
       );
 
-      const clips = await Promise.all(
-        messages.map(async (mes) => await mapMessageToClips(mes, req.user)),
-      );
-
+      const clips = messages.map(mapMessageToClips);
       const cursors = await getCursors(messages, FETCH_SIZE, direction);
 
       const responseBody = {
@@ -55,27 +52,11 @@ export async function getAllClips(app: FastifyInstance) {
   });
 }
 
-async function mapMessageToClips(
-  messageProps: MessageWithAttachment,
-  user?: { id: string },
-) {
+function mapMessageToClips(messageProps: MessageWithAttachment) {
   const { message, attachment } = messageProps;
 
   const { createdTimestamp, author } = message;
   const clipId = attachment.id;
-  let previousVote;
-
-  if (user) {
-    previousVote = await vote.findOneById(
-      { userId: user.id, clipId },
-      { throwable: false },
-    );
-  }
-
-  const [totalVotes, totalComments] = await Promise.all([
-    vote.getTotalVotes(clipId),
-    Comment.countCommentsByClipId(clipId),
-  ]);
 
   return {
     clip_id: clipId,
@@ -85,8 +66,5 @@ async function mapMessageToClips(
       username: author.globalName,
       avatar_url: author.avatarURL(),
     },
-    previous_user_vote: previousVote?.vote_type || null,
-    total_votes: totalVotes,
-    total_comments: totalComments,
   };
 }

@@ -41,18 +41,11 @@ export function ClipesList() {
           <ClipeItem key={clipe.clip_id}>
             <ClipeItem.User user={clipe.user} posted_at={clipe.posted_at} />
             <ClipeItem.Video src={clipe.video_src} />
-            <ClipeItem.Actions>
-              <VotesComponent
-                clipId={clipe.clip_id}
-                initialVotes={clipe.total_votes}
-                previousVoteValue={clipe.previous_user_vote}
-                onVoteError={showVoteLoginAlert}
-              />
-              <CommentsComponent
-                initialCommentsCount={clipe.total_comments}
-                onClick={() => openComments(clipe.clip_id)}
-              />
-            </ClipeItem.Actions>
+            <ClipeItem.Actions
+              clipId={clipe.clip_id}
+              onVoteError={showVoteLoginAlert}
+              onOpenComments={() => openComments(clipe.clip_id)}
+            />
           </ClipeItem>
         )}
       />
