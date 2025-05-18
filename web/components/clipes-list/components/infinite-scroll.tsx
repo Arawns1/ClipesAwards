@@ -86,7 +86,7 @@ export default function InfiniteScroll({
         useWindowScroll
         data={allRows}
         endReached={fetchNext}
-        increaseViewportBy={{ top: 200, bottom: 200 }}
+        increaseViewportBy={{ top: 300, bottom: 300 }}
         overscan={{ main: 200, reverse: 200 }}
         components={{
           List: gridComponents.List,

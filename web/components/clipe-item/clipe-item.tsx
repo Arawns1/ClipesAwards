@@ -32,6 +32,7 @@ function ClipeItemSkeleton() {
     <div className="rounded-lg border p-4 bg-card shadow-sm dark:bg-card-dark dark:border-card-dark-border">
       <UserInfoSkeleton />
       <VideoComponentSkeleton />
+      <ActionsComponentSkeleton />
     </div>
   );
 }

@@ -48,7 +48,7 @@ async function voteOnClip(clipId: string, voteType: string) {
   return await response.json();
 }
 
-async function getClipStats(clipId: string) {
+async function getClipStats(clipId: string, signal?: AbortSignal) {
   const fetchURL = `${env.NEXT_PUBLIC_BASE_API_URL}/api/clips/${clipId}/stats`;
 
   const response = await fetch(fetchURL, {
@@ -57,6 +57,7 @@ async function getClipStats(clipId: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    signal,
   });
 
   if (!response.ok) {

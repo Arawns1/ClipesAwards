@@ -18,7 +18,7 @@ function usePostComment(clipId: string) {
     mutationFn: (comment: string) => postComment(clipId, comment),
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["comments", clipId] });
-      queryClient.invalidateQueries({ queryKey: ["clipes"] });
+      queryClient.invalidateQueries({ queryKey: ["clip-stats", clipId] });
     },
   });
 }
