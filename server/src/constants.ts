@@ -32,11 +32,8 @@ if (!process.env.DISCORD_GUILD_ID)
 export const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID;
 
 export const PORT = parseInt(process.env.PORT || "3100", 10);
-export const HOST = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
-export const BASE_URL =
-  "RENDER_EXTERNAL_URL" in process.env
-    ? process.env.RENDER_EXTERNAL_URL
-    : `http://${HOST}:${PORT}`;
+export const HOST = `0.0.0.0`;
+export const BASE_URL = `http://${HOST}:${PORT}`;
 
 export const COOKIE_TOKEN_NAME = process.env.COOKIE_TOKEN_NAME!;
 export const COOKIE_IS_LOGGED_NAME = process.env.COOKIE_IS_LOGGED_NAME!;

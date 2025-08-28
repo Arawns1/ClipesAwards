@@ -1,0 +1,27 @@
+# Node modules e cache
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Builds locais
+dist
+build
+coverage
+
+# Configurações e envs
+.env
+.env.local
+.env.*.local
+
+# IDEs e editores
+.vscode
+.idea
+*.swp
+
+# Logs
+logs
+*.log
+
+# Docker
+docker-compose.override.yml
+.DS_Store
