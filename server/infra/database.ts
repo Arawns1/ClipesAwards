@@ -5,7 +5,8 @@ const pool = new Pool({
   user: process.env.POSTGRES_USER,
   database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
-  ssl: getSSLValues(),
+  // ssl: getSSLValues(),
+  ssl: Boolean(process.env.POSTGRES_SSL_REQUIRED) || false,
   max: 5, // número máximo de conexões simultâneas
   idleTimeoutMillis: 30000, // desconecta conexões ociosas após 30 segundos
   connectionTimeoutMillis: 10000, // erro se não conseguir conectar em 10 segundos
