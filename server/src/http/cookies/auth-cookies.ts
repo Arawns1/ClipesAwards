@@ -6,8 +6,8 @@ function setAuthCookies(res: FastifyReply, token: string) {
     path: "/",
     httpOnly: true,
     signed: true,
-    secure: "RENDER" in process.env ? true : false,
-    sameSite: "RENDER" in process.env ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 60 * 60 * 24 * TOKEN_DAYS_EXPIRATION,
   });
 }
@@ -17,8 +17,8 @@ function clearAuthCookies(reply: FastifyReply) {
     path: "/",
     httpOnly: true,
     signed: true,
-    secure: "RENDER" in process.env ? true : false,
-    sameSite: "RENDER" in process.env ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   });
 }
 
